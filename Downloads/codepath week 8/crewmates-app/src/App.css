@@ -1,0 +1,141 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: system-ui, sans-serif;
+  background: #f7f9fc;
+  color: #333;
+}
+
+#root {
+  width: 100%;
+  max-width: 800px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.navbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.nav-list {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-list a {
+  color: #4a90e2;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.nav-list a:hover {
+  text-decoration: underline;
+}
+
+main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+input,
+textarea {
+  width: 80%;
+  max-width: 400px;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+button[type="submit"] {
+  padding: 0.75rem 2rem;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 200ms;
+}
+
+button[type="submit"]:hover {
+  background: #357abd;
+}
+
+form + p {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.card {
+  width: 100%;
+  max-width: 500px;
+  background: white;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+.card h2 {
+  margin: 0.5rem 0;
+  font-size: 1.25rem;
+}
+
+.card p {
+  margin: 0.5rem 0;
+  color: #555;
+}
+
+.detail-container,
+.edit-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
