@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import { AnimatePresence, motion } from 'framer-motion'
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
 
 type Resume = {
   id: string
@@ -10,19 +11,36 @@ type Resume = {
   file_url: string
 }
 
-export default function ResumeScroller() {
+type Props = {
+  industry: string
+  level: string
+}
+
+export default function ResumeScroller({ industry, level }: Props) {
   const [resumes, setResumes] = useState<Resume[]>([])
   const [current, setCurrent] = useState(0)
   const [direction, setDirection] = useState(0)
   const [loading, setLoading] = useState(true)
 
+  const [modalOpen, setModalOpen] = useState(false)
+
   useEffect(() => {
     async function fetchResumes() {
       setLoading(true)
-      const { data, error } = await supabase
+      let query = supabase
         .from('resume_urls')
         .select('id, filename, file_url')
         .order('uploaded_at', { ascending: true })
+
+      if (industry && industry !== 'all') {
+        query = query.ilike('industry', `%${industry}%`)
+      }
+
+      if (level && level !== 'all') {
+        query = query.ilike('level', level)
+      }
+
+      const { data, error } = await query
 
       if (error || !data) {
         console.error(error)
@@ -30,36 +48,40 @@ export default function ResumeScroller() {
       } else {
         setResumes(data)
       }
+
+      setCurrent(0)
       setLoading(false)
     }
+
     fetchResumes()
-  }, [])
+  }, [industry, level]) // refetch resumes when industry changes
 
-  if (loading) return (
-    <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
-      Loading resumes…
-    </div>
-  )
-  if (!resumes.length) return (
-    <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
-      No resumes found.
-    </div>
-  )
-
-  const { filename, file_url } = resumes[current]
-  const prev = () => {
-    setDirection(-1)
-    setCurrent(c =>
-      // if at start, wrap to last; otherwise step back
-      c === 0 ? resumes.length - 1 : c - 1
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
+        Loading resumes…
+      </div>
     )
   }
+
+  if (!resumes.length) {
+    return (
+      <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
+        No resumes found.
+      </div>
+    )
+  }
+
+  const { filename, file_url } = resumes[current]
+
+  const prev = () => {
+    setDirection(-1)
+    setCurrent((c) => (c === 0 ? resumes.length - 1 : c - 1))
+  }
+
   const next = () => {
     setDirection(1)
-    setCurrent(c =>
-      // if at end, wrap to first; otherwise step forward
-      c === resumes.length - 1 ? 0 : c + 1
-    )
+    setCurrent((c) => (c === resumes.length - 1 ? 0 : c + 1))
   }
 
 
@@ -69,7 +91,7 @@ export default function ResumeScroller() {
       {/* Controls panel + Image */}
       <div className="flex-1 flex">
         {/* Static control panel */}
-        <div className="w-70 shadow rounded-l-xl flex-shrink-0 bg-[#dcdee3] p-4 flex flex-col">
+        <div className="w-60 shadow rounded-l-xl flex-shrink-0 bg-[#dcdee3] p-4 flex flex-col">
           {/* Top: open link */}
           <a
             href={file_url}
